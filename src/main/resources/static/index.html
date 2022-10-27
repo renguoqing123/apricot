@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+</head>
+<body>
+<div id="top"></div>
+<div><a href="/context.html" target="_blank">notebook</a></div>
+<div><a href="/socket.html" target="_blank">message</a></div>
+</body>
+<script type="text/javascript" src="js/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript">
+	var host = window.location.host;
+	
+	$(function () {
+	    $.get("top.html",function (data) { //引入时的页面名称
+	        $("#top").html(data); //引入时的ID
+	    });
+	});
+	
+	
+</script>
+</html>

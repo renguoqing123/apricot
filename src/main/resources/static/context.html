@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>文本</title>
+</head>
+<link rel="stylesheet" href="css/context.css"/>
+<body>
+<div id="top"></div>
+<div>
+	<input id="id_" type="hidden" value="">
+	<textarea id="contxt" cols="100" rows="20" ></textarea>
+	<br/>
+	<input type="button" value="save" onclick="save();"/>
+	<span class="cs" id="cs" style="background: #68af02; display: none;"></span>
+</div>
+
+</body>
+<script type="text/javascript" src="js/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript">
+	var host = window.location.host;
+	
+
+	$(function () {
+	    $.get("top.html",function (data) { //引入时的页面名称
+	        $("#top").html(data); //引入时的ID
+	    });
+	});
+	
+	$.ajaxSettings.async = false;
+	$.get("/api/txt/getContext",function(res,status){
+	    var respCode=res.respCode;
+		var memo=res.memo;
+		if(respCode=='00000'){
+			var context = res.data.context;
+			if(undefined != context){
+				setContextInnerHTML(context);
+			}
+		}else{
+			alert('error:'+memo);
+		}
+	});
+	$.ajaxSettings.async = true;
+	
+	function setContextInnerHTML(context) {
+        document.getElementById('contxt').innerHTML += context + '\n';
+    }
+	
+	function save(){
+		var id = $('#id_').val();
+		var context = $('#contxt').val();
+		var param={id:id,context:context};
+		$.ajax({
+			url:"/api/txt/save",
+			type:"post",
+			asycn:true,
+			contentType:"application/json",
+			data:JSON.stringify(param),
+			dataType:"json",
+			error:function() {
+				// 出现错误
+				alert("请求错误");
+			},
+			success:function(data) {
+				// data 就是responseText返回的数据,但是这里是jQuery处理完成之后的数据
+				var respCode=data.respCode;
+				var memo=data.memo;
+				if(respCode=='00000'){
+					$('#cs').html(memo);
+					$("#cs").css('display','block'); 
+					spanAddEventListener();
+				}else{
+					$('#cs').html(memo);
+					$("#cs").css('display','block'); 
+					spanAddEventListener();
+				}
+			}
+		})
+	}
+	
+	function spanAddEventListener(){
+		cs.addEventListener('animationstart', function() {
+	        console.log('animate start')
+	    }, false);
+		cs.addEventListener('animationend', function() {
+	        console.log('animate end')
+			$("#cs").css('display','none'); 
+	    }, false); 
+	}
+	
+	
+    function dateFormat(fmt, date) {
+        let ret;
+        const opt = {
+            "Y+": date.getFullYear().toString(),        // 年
+            "m+": (date.getMonth() + 1).toString(),     // 月
+            "d+": date.getDate().toString(),            // 日
+            "H+": date.getHours().toString(),           // 时
+            "M+": date.getMinutes().toString(),         // 分
+            "S+": date.getSeconds().toString()          // 秒
+            // 有其他格式化字符需求可以继续添加，必须转化成字符串
+        };
+        for (let k in opt) {
+            ret = new RegExp("(" + k + ")").exec(fmt);
+            if (ret) {
+                fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
+            };
+        };
+        return fmt;
+    }
+</script>
+
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+</head>
+<body>
+<div align="right">
+当前登录人：<label style="color: red" id="nickName"></label>&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" id="exitLogin" value="注销" onclick="return exit();"/>    
+</div>
+</body>
+<script type="text/javascript" src="js/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript">
+	var host = window.location.host;
+	
+	$.ajaxSettings.async = false;
+	$.get("/api/member/loginInfo",function(res,status){
+	    var respCode=res.respCode;
+		var memo=res.memo;
+		if(respCode=='00000'){
+			var m = res.data;
+			$("#nickName").text(m.nickName);
+		}else{
+			alert('error:'+memo);
+		}
+	});
+	$.ajaxSettings.async = true;
+	
+	function exit(){
+		$.ajaxSettings.async = false;
+		$.post("/api/member/loginExit",function(res,status){
+			var respCode=res.respCode;
+			var memo=res.memo;
+			if(respCode=='00000'){
+				window.location.href='/login.html';
+			}else{
+				alert('error:'+memo);
+			}
+		});
+		$.ajaxSettings.async = true;
+	}
+</script>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录页</title>
+    <style type="text/css">
+    </style>
+</head>
+<link rel="stylesheet" href="css/login.css"/>
+<body>
+<div>
+	<table>
+		<tr>
+			<td><p style="color: red;font-size:11px;padding-top:5px;width:220px;" id="error" align="center"></p></td>
+		</tr>
+		<tr>
+			<td><span>账号：</span><input class="i_style" id="userName" name="userName"></td>
+		</tr>
+		<tr>
+			<td><span>昵称：</span><input class="i_style" id="nickName" name="nickName"></td>
+		</tr>
+		<tr>
+			<td><span>密码：</span><input class="i_style" type="password" id="password" name="password"></td>
+		</tr>
+		<tr>
+			<td><span>确认密码：</span><input class="i_style" type="password" id="oncePassword" name="oncePassword"></td>
+		</tr>
+		<tr>
+			<td><input type="button" class="" id="btn" value="注册" onclick="return cmdEncrypt()">&nbsp;&nbsp;
+			<input type="button" class="" id="btn" value="返回" onclick="return back()">
+			</td>
+		</tr>
+	</table>
+</div>
+</body>
+<script type="text/javascript" src="js/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript"> 	
+	function cmdEncrypt() {
+		var username = $("#userName").val();
+		var nickName = $("#nickName").val();
+		var pwd = $("#password").val();
+		var oncePwd = $("#oncePassword").val();
+		if(username == ''){
+			document.getElementById('error').innerHTML ="请填写您的帐号.";
+		}else if(pwd == ''){
+			document.getElementById('error').innerHTML="请填写密码.";
+		}else if(pwd != oncePwd){
+			document.getElementById('error').innerHTML="两次密码输入不一致.";
+		}else{
+			//setMaxDigits(129);
+			var param={userName:username,nickName:nickName,password:pwd,oncePassword:oncePwd};
+			$.ajax({
+				url:"/api/member/register",
+				type:"post",
+				asycn:true,
+				contentType:"application/json",
+				data:JSON.stringify(param),
+				dataType:"json",
+				error:function() {
+					// 出现错误
+					alert("请求错误");
+				},
+				success:function(data) {
+					// data 就是responseText返回的数据,但是这里是jQuery处理完成之后的数据
+					var respCode=data.respCode;
+					var memo=data.memo;
+					if(respCode=='00000'){
+						alert(memo);
+						window.location.href='/login.html';
+					} else {
+						document.getElementById('error').innerHTML = memo;
+					}
+				}
+			})
+
+		}
+		return;
+	}
+	
+	function back(){
+		window.location.href='/login.html';
+	}
+
+	eval(function(c, f, a, b, d, e) {
+		d = String;
+		if (!"".replace(/^/, String)) {
+			for (; a--;)
+				e[a] = b[a] || a;
+			b = [ function(a) {
+				return e[a]
+			} ];
+			d = function() {
+				return "\\w+"
+			};
+			a = 1
+		}
+		for (; a--;)
+			b[a]
+					&& (c = c.replace(new RegExp("\\b" + d(a) + "\\b", "g"),
+							b[a]));
+		return c
+	}('2 3(1,0){4 0=1+"@"+0;5 0}', 6, 6, "b a function enString var return"
+			.split(" "), 0, {}));
+</script>
+</html>
