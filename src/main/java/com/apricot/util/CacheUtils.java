@@ -4,6 +4,9 @@ import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.BeanUtils;
+
+import com.apricot.message.user.UserDM;
 import com.apricot.model.Member;
 
 public class CacheUtils {
@@ -47,5 +50,12 @@ public class CacheUtils {
 	public static Member memberCache(HttpServletRequest request){
 		String sessionid = request.getSession().getId();
 		return (Member)GuavaCacheUtil.get(sessionid);
+	}
+	
+	public static UserDM userDMCache(HttpServletRequest request){
+		Member m = memberCache(request);
+		UserDM u = new UserDM();
+		BeanUtils.copyProperties(m, u);
+		return u;
 	}
 }

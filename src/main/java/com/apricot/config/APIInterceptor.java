@@ -2,18 +2,16 @@ package com.apricot.config;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import com.apricot.common.ResponseResult;
-import com.apricot.common.SysRespConstants;
 import com.apricot.util.GsonUtil;
 import com.apricot.util.GuavaCacheUtil;
 
 /**
  * api拦截器
- * 
  * @author rengq
  *
  */
@@ -23,8 +21,9 @@ public class APIInterceptor extends HandlerInterceptorAdapter {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		String sessionid = request.getSession().getId();
-		System.out.println("sessionid:"+sessionid);
+		HttpSession session = request.getSession();
+		String sessionid = session.getId();
+		System.out.println("session:"+GsonUtil.gson.toJson(session));
 		Object cacheMember = GuavaCacheUtil.get(sessionid);
 		if(null == cacheMember) {
 //			ResponseResult<Void> rr = new ResponseResult<>();
